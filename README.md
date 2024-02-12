@@ -31,3 +31,5 @@ You can develop your app by starting with prioritized features first. The follow
    - [ ] Dockerfile and docker-compose file.
    - [ ] Upload docker image to docker registry (docker hub).
    - [ ] Deploy app to heroku, AWS or GCP.
+
+## Entity Relationship Diagram

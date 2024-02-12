@@ -66,6 +66,10 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+
+		<finalName>
+			shop
+		</finalName>
 	</build>
 
 </project>
