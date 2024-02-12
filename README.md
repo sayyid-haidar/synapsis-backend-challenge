@@ -19,7 +19,7 @@ You can develop your app by starting with prioritized features first. The follow
 1. System Design
    - [ ] Good README Documentation.
    - [ ] RESTful API Design.
-   - [ ] Entity Relationship Diagram.
+   - [x] Entity Relationship Diagram.
 
 2. Backend Development
    - [ ] RESTful API.
@@ -32,4 +32,39 @@ You can develop your app by starting with prioritized features first. The follow
    - [ ] Upload docker image to docker registry (docker hub).
    - [ ] Deploy app to heroku, AWS or GCP.
 
-## Entity Relationship Diagram
+## Entity Relationship Diagram (ERD)
+
+```mermaid
+erDiagram
+    User {
+        id int
+        email string
+        password string
+    }
+
+    Product {
+        id int
+        name string
+        price decimal
+    }
+
+    Chart {
+        user_id int
+        product_i int
+        quantit int
+    }
+
+    Transaction {
+        id int
+        user_i int
+        product_id int
+        product_name string
+        net_price int
+        quantity decimal
+    }
+
+    User ||--o{ Chart : have 
+    User ||--o{ Transaction : have 
+    Transaction }o--|| Product : have 
+    Chart }o--|| Product : have 
+```
