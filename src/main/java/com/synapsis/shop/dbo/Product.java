@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,21 +26,26 @@ public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
     @NotBlank
     @Size(min = 5)
-    @Size(min = 225)
+    @Size(max = 225)
+    @Column(name = "name")
     private String name;
 
     @NotNull
+    @Column(name = "price")
     private Integer price;
 
     @CreationTimestamp
-    @JsonProperty("create_at")
+    @JsonProperty("created_at")
+    @Column(name = "created_at")
     private Instant createdAt;
 
     @UpdateTimestamp
-    @JsonProperty("update_at")
+    @JsonProperty("updated_at")
+    @Column(name = "updated_at")
     private Instant updatedAt;
 }

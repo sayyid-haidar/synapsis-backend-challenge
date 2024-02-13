@@ -8,7 +8,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -17,22 +22,31 @@ import lombok.Data;
 @Data
 @Table(name = "carts")
 public class Cart implements Serializable {
-    @NotNull
-    @JsonProperty("product_id")
-    private Integer productId;
+
+    @EmbeddedId
+    private CartId id;
+
+    @ManyToOne
+    @MapsId("userId")
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @MapsId("productId")
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @NotNull
-    @JsonProperty("user_id")
-    private Integer userId;
-
-    @NotNull
+    @Column(name = "quantity")
     private Integer quantity;
 
     @CreationTimestamp
-    @JsonProperty("create_at")
+    @JsonProperty("created_at")
+    @Column(name = "created_at")
     private Instant createdAt;
 
     @UpdateTimestamp
-    @JsonProperty("update_at")
+    @JsonProperty("updated_at")
+    @Column(name = "updated_at")
     private Instant updatedAt;
 }

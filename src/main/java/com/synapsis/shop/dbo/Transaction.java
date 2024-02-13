@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,30 +25,37 @@ import lombok.Data;
 public class Transaction implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
     @NotNull
     @JsonProperty("product_id")
+    @Column(name = "product_id")
     private Integer productId;
 
     @NotBlank
     @Size(min = 5)
-    @Size(min = 225)
+    @Size(max = 225)
     @JsonProperty("product_name")
+    @Column(name = "product_name")
     private String productName;
 
     @NotNull
     @JsonProperty("net_price")
+    @Column(name = "net_price")
     private Integer netPrice;
 
     @NotNull
+    @Column(name = "quantity")
     private Integer quantity;
 
     @CreationTimestamp
-    @JsonProperty("create_at")
+    @JsonProperty("created_at")
+    @Column(name = "created_at")
     private Instant createdAt;
 
     @UpdateTimestamp
-    @JsonProperty("update_at")
+    @JsonProperty("updated_at")
+    @Column(name = "updated_at")
     private Instant updatedAt;
 }

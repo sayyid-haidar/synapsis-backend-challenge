@@ -40,27 +40,35 @@ erDiagram
         id int
         email string
         password string
+        created_at timestamp
+        updated_at timestamp
     }
 
     Product {
         id int
         name string
-        price decimal
+        price int
+        created_at timestamp
+        updated_at timestamp
     }
 
     Chart {
         user_id int
-        product_i int
+        product_id int
         quantit int
+        created_at timestamp
+        updated_at timestamp
     }
 
     Transaction {
         id int
-        user_i int
+        user_id int
         product_id int
         product_name string
         net_price int
-        quantity decimal
+        quantity int
+        created_at timestamp
+        updated_at timestamp
     }
 
     User ||--o{ Chart : have 

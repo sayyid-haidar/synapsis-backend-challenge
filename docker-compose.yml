@@ -17,6 +17,8 @@ services:
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 3306
       SPRING_REDIS_PASSWORD: redispassword
+      JWT_SECRET: 9a4f2c8d3b7a1e6f45c8a0b3f267d8b1d4e6f3c8a9d2b5f8e3a9c8b5f6v8a3d9
+      JWT_EXPIRED_IN_MINUTE: 10
 
   mysql:
     image: mysql:latest

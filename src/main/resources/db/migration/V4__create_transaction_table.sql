@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS transactions (
-    id INT PRIMARY KEY,
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     product_id INT NOT NULL,
     product_name VARCHAR(255) NOT NULL,
