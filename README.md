@@ -1,11 +1,22 @@
 # Synapsis Backend Challenge
 
+## Table of Contents
+
+- [Synapsis Backend Challenge](#synapsis-backend-challenge)
+  - [Table of Contents](#table-of-contents)
+  - [Challenge](#challenge)
+  - [MVP Creteria](#mvp-creteria)
+  - [Assessment Criteria](#assessment-criteria)
+  - [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
+  - [API Doc](#api-doc)
+  - [How to run application](#how-to-run-application)
+
 ## Challenge
 
 As a BackEnd Engineer you are required to create an online store application, you don't need to create a FrontEnd but focus on the BackEnd (RESTful API) only. The programming language you must use is Go-lang or Java spring boot.
 You can develop your app by starting with prioritized features first. The following are the priority features to meet the MVP (minimum viable product).
 
-## MVP creteria
+## MVP Creteria
 
 - [x] Customer can view product list by product category
 - [x] Customer can add product to shopping cart
@@ -29,7 +40,7 @@ You can develop your app by starting with prioritized features first. The follow
 
 3. Deployment
    - [x] Dockerfile and docker-compose file.
-   - [ ] Upload docker image to docker registry (docker hub).
+   - [x] Upload docker image to docker registry (docker hub).
    - [ ] Deploy app to heroku, AWS or GCP.
 
 ## Entity Relationship Diagram (ERD)
@@ -84,4 +95,24 @@ erDiagram
     Transaction }o--|| Product : have 
     Chart }o--|| Product : have 
     ProductCategory ||--o{ Product : have 
+```
+
+## API Doc
+
+https://sayyid-haidar.github.io/synapsis-backend-challenge-apidoc/
+
+## How to run application
+
+Run with local env:
+
+```bash
+mvn clean install
+
+mvn spring-boot:run
+```
+
+Run with docker:
+
+```bash
+docker compose up
 ```
