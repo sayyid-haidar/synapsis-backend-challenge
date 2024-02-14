@@ -5,16 +5,20 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.synapsis.shop.dbo.Cart;
 import com.synapsis.shop.dbo.CartId;
 import com.synapsis.shop.dbo.Product;
+import com.synapsis.shop.dbo.Transaction;
 import com.synapsis.shop.dbo.User;
 import com.synapsis.shop.dto.CartDTO;
 import com.synapsis.shop.dto.CartRequest;
@@ -22,111 +26,145 @@ import com.synapsis.shop.dto.UserDTO;
 import com.synapsis.shop.exception.BadRequestException;
 import com.synapsis.shop.repository.CartRepository;
 import com.synapsis.shop.repository.ProductRepository;
+import com.synapsis.shop.repository.TransactionRepository;
 import com.synapsis.shop.repository.UserRepository;
 import com.synapsis.shop.util.JwtUtil;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 
+@RestController
 @CrossOrigin(origins = "*")
 public class CartController {
 
-    @Autowired
-    UserRepository userRepository;
+	@Autowired
+	UserRepository userRepository;
 
-    @Autowired
-    ProductRepository productRepository;
+	@Autowired
+	ProductRepository productRepository;
 
-    @Autowired
-    CartRepository cartRepository;
+	@Autowired
+	CartRepository cartRepository;
 
-    @Autowired
-    JwtUtil jwtUtil;
+	@Autowired
+	TransactionRepository transactionRepository;
 
-    @GetMapping("/carts")
-    public ResponseEntity<List<CartDTO>> carts(
-            @RequestHeader("Authorization") String authToken)
-            throws Exception {
+	@Autowired
+	JwtUtil jwtUtil;
 
-        List<CartDTO> response = new ArrayList<>();
-        String jwt = authToken.replace("Bearer ", "");
-        UserDTO userDTO = this.jwtUtil.parseToken(jwt);
+	@GetMapping("/carts")
+	public ResponseEntity<List<CartDTO>> carts(
+			@Parameter(hidden = true) @RequestHeader(name = "Authorization", required = false) String authToken)
+			throws Exception {
 
-        User user = this.userRepository.findById(userDTO.getId())
-                .orElseThrow(BadRequestException::new);
+		List<CartDTO> response = new ArrayList<>();
 
-        for (Cart cart : user.getCarts()) {
-            Product product = cart.getProduct();
-            if (product == null) {
-                continue;
-            }
+		UserDTO userDTO = this.jwtUtil.parseToken(authToken);
 
-            CartDTO dto = CartDTO.builder()
-                    .productId(product.getId())
-                    .productName(product.getName())
-                    .quantity(cart.getQuantity())
-                    .netPrice(cart.getQuantity() * product.getPrice())
-                    .build();
+		User user = this.userRepository.findById(userDTO.getId())
+				.orElseThrow(BadRequestException::new);
 
-            response.add(dto);
-        }
+		for (Cart cart : user.getCarts()) {
+			Product product = cart.getProduct();
+			if (product == null) {
+				continue;
+			}
 
-        return ResponseEntity.ok().body(response);
-    }
+			CartDTO dto = CartDTO.builder()
+					.productId(product.getId())
+					.productName(product.getName())
+					.quantity(cart.getQuantity())
+					.netPrice(cart.getQuantity() * product.getPrice())
+					.build();
 
-    @PostMapping("/cart")
-    public ResponseEntity<Cart> addCart(
-            @RequestHeader("Authorization") String authToken,
-            @RequestBody @Valid CartRequest request)
-            throws Exception {
+			response.add(dto);
+		}
 
-        String jwt = authToken.replace("Bearer ", "");
-        UserDTO userDTO = this.jwtUtil.parseToken(jwt);
+		return ResponseEntity.ok().body(response);
+	}
 
-        User user = this.userRepository.findById(userDTO.getId())
-                .orElseThrow(BadRequestException::new);
+	@PostMapping("/cart")
+	public ResponseEntity<Cart> addCart(
+			@Parameter(hidden = true) @RequestHeader(name = "Authorization", required = false) String authToken,
+			@RequestBody @Valid CartRequest request)
+			throws Exception {
 
-        Product product = this.productRepository.findById(request.getProductId())
-                .orElseThrow(BadRequestException::new);
+		UserDTO userDTO = this.jwtUtil.parseToken(authToken);
 
-        CartId cartId = CartId.builder()
-                .userId(user.getId())
-                .productId(product.getId())
-                .build();
+		User user = this.userRepository.findById(userDTO.getId())
+				.orElseThrow(BadRequestException::new);
 
-        Cart cart = this.cartRepository.findById(cartId)
-                .orElse(new Cart());
+		Product product = this.productRepository.findById(request.getProductId())
+				.orElseThrow(BadRequestException::new);
 
-        cart.setUser(user);
-        cart.setProduct(product);
-        cart.setQuantity(cart.getQuantity() + request.getQuantity());
+		CartId cartId = CartId.builder()
+				.userId(user.getId())
+				.productId(product.getId())
+				.build();
 
-        this.cartRepository.save(cart);
+		Cart cart = this.cartRepository.findById(cartId)
+				.orElse(new Cart());
 
-        return ResponseEntity.ok().body(cart);
-    }
+		cart.setUser(user);
+		cart.setProduct(product);
+		cart.setQuantity(cart.getQuantity() + request.getQuantity());
 
-    @DeleteMapping("/cart/{productId}")
-    public ResponseEntity<Cart> updateCart(
-            @PathVariable Integer productId,
-            @RequestHeader("Authorization") String authToken,
-            @RequestBody @Valid CartRequest request)
-            throws Exception {
+		this.cartRepository.save(cart);
 
-        String jwt = authToken.replace("Bearer ", "");
-        UserDTO userDTO = this.jwtUtil.parseToken(jwt);
+		return ResponseEntity.ok().body(cart);
+	}
 
-        CartId cartId = CartId.builder()
-                .userId(userDTO.getId())
-                .productId(productId)
-                .build();
+	@DeleteMapping("/cart/{product_id}")
+	public ResponseEntity<Cart> updateCart(
+			@Parameter(hidden = true) @RequestHeader(name = "Authorization", required = false) String authToken,
+			@PathVariable(name = "product_id") Integer productId,
+			@RequestBody @Valid CartRequest request)
+			throws Exception {
 
-        Cart cart = this.cartRepository.findById(cartId)
-                .orElseThrow(BadRequestException::new);
+		UserDTO userDTO = this.jwtUtil.parseToken(authToken);
 
-        this.cartRepository.delete(cart);
+		CartId cartId = CartId.builder()
+				.userId(userDTO.getId())
+				.productId(productId)
+				.build();
 
-        return ResponseEntity.ok().body(null);
-    }
+		Cart cart = this.cartRepository.findById(cartId)
+				.orElseThrow(BadRequestException::new);
+
+		this.cartRepository.delete(cart);
+
+		return ResponseEntity.ok().body(null);
+	}
+
+	@Transactional
+	@PostMapping("/cart/{product_id}/checkout")
+	public ResponseEntity<Transaction> checkoutCart(
+			@Parameter(hidden = true) @RequestHeader(name = "Authorization", required = false) String authToken,
+			@PathVariable(name = "product_id") Integer productId)
+			throws Exception {
+
+		UserDTO userDTO = this.jwtUtil.parseToken(authToken);
+
+		CartId cartId = CartId.builder()
+				.userId(userDTO.getId())
+				.productId(productId)
+				.build();
+
+		Cart cart = this.cartRepository.findById(cartId)
+				.orElseThrow(BadRequestException::new);
+
+		Transaction transaction = Transaction.builder()
+				.productId(cart.getProduct().getId())
+				.productName(cart.getProduct().getName())
+				.userId(userDTO.getId())
+				.quantity(cart.getQuantity())
+				.netPrice(cart.getQuantity() * cart.getProduct().getPrice())
+				.build();
+
+		this.transactionRepository.save(transaction);
+		this.cartRepository.delete(cart);
+
+		return ResponseEntity.ok().body(transaction);
+	}
 
 }

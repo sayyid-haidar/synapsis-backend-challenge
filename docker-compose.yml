@@ -21,7 +21,7 @@ services:
       JWT_EXPIRED_IN_MINUTE: 10
 
   mysql:
-    image: mysql:latest
+    image: mysql:8
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword

@@ -1,11 +1,11 @@
 package com.synapsis.shop.repository;
 
-import com.synapsis.shop.dbo.Cart;
-import com.synapsis.shop.dbo.CartId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.synapsis.shop.dbo.ProductCategory;
+
 @Repository
-public interface CartRepository extends JpaRepository<Cart, CartId> {
+public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Integer> {
 
 }

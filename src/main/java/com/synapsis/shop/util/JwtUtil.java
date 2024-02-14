@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.synapsis.shop.ShopApplication;
 import com.synapsis.shop.dbo.User;
 import com.synapsis.shop.dto.UserDTO;
+import com.synapsis.shop.exception.UnauthorizeException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -42,17 +43,25 @@ public class JwtUtil {
                 .compact();
     }
 
-    public UserDTO parseToken(String jwt) {
-        Claims claims = Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secret)))
-                .build()
-                .parseSignedClaims(jwt)
-                .getPayload();
+    public UserDTO parseToken(String authToken) throws Exception {
+        try {
+            String jwt = authToken.replace("Bearer ", "")
+                    .replace("bearer", "");
 
-        return UserDTO.builder()
-                .id(claims.get("user_id", Integer.class))
-                .email(claims.get("user_email", String.class))
-                .build();
+            Claims claims = Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secret)))
+                    .build()
+                    .parseSignedClaims(jwt)
+                    .getPayload();
+
+            return UserDTO.builder()
+                    .id(claims.get("user_id", Integer.class))
+                    .email(claims.get("user_email", String.class))
+                    .build();
+        } catch (Exception e) {
+            throw new UnauthorizeException();
+        }
+
     }
 
 }

@@ -7,28 +7,28 @@ You can develop your app by starting with prioritized features first. The follow
 
 ## MVP creteria
 
-- [ ] Customer can view product list by product category
-- [ ] Customer can add product to shopping cart
-- [ ] Customers can see a list of products that have been added to the shopping cart
-- [ ] Customer can delete product list in shopping cart
-- [ ] Customers can checkout and make payment transactions
-- [ ] Login and register customers
+- [x] Customer can view product list by product category
+- [x] Customer can add product to shopping cart
+- [x] Customers can see a list of products that have been added to the shopping cart
+- [x] Customer can delete product list in shopping cart
+- [x] Customers can checkout and make payment transactions
+- [x] Login and register customers
 
 ## Assessment Criteria
 
 1. System Design
-   - [ ] Good README Documentation.
-   - [ ] RESTful API Design.
+   - [x] Good README Documentation.
+   - [x] RESTful API Design.
    - [x] Entity Relationship Diagram.
 
 2. Backend Development
-   - [ ] RESTful API.
-   - [ ] Database Implementation.
-   - [ ] Commit message.
-   - [ ] Using cache like redis is a plus.
+   - [x] RESTful API.
+   - [x] Database Implementation.
+   - [x] Commit message.
+   - [x] Using cache like redis is a plus.
 
 3. Deployment
-   - [ ] Dockerfile and docker-compose file.
+   - [x] Dockerfile and docker-compose file.
    - [ ] Upload docker image to docker registry (docker hub).
    - [ ] Deploy app to heroku, AWS or GCP.
 
@@ -44,10 +44,18 @@ erDiagram
         updated_at timestamp
     }
 
+    ProductCategory {
+        id int
+        name string
+        created_at timestamp
+        updated_at timestamp
+    }
+
     Product {
         id int
         name string
         price int
+        category_id int
         created_at timestamp
         updated_at timestamp
     }
@@ -75,4 +83,5 @@ erDiagram
     User ||--o{ Transaction : have 
     Transaction }o--|| Product : have 
     Chart }o--|| Product : have 
+    ProductCategory ||--o{ Product : have 
 ```

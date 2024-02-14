@@ -17,10 +17,16 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "transactions")
 public class Transaction implements Serializable {
     @Id
@@ -29,12 +35,17 @@ public class Transaction implements Serializable {
     private Integer id;
 
     @NotNull
+    @JsonProperty("user_id")
+    @Column(name = "user_id")
+    private Integer userId;
+
+    @NotNull
     @JsonProperty("product_id")
     @Column(name = "product_id")
     private Integer productId;
 
     @NotBlank
-    @Size(min = 5)
+    @Size(min = 5, max = 255)
     @Size(max = 225)
     @JsonProperty("product_name")
     @Column(name = "product_name")

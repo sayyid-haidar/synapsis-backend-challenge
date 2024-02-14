@@ -20,6 +20,8 @@ import com.synapsis.shop.exception.InvalidCredentialException;
 import com.synapsis.shop.repository.UserRepository;
 import com.synapsis.shop.util.JwtUtil;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +40,7 @@ public class AuthController {
 
     private Logger logger = Logger.getLogger(AuthController.class.getName());
 
+    @SecurityRequirements
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request) throws Exception {
         User user = this.userRepository.findOneByEmail(request.getEmail()).orElse(null);
@@ -61,6 +64,7 @@ public class AuthController {
         return ResponseEntity.ok().body(response);
     }
 
+    @SecurityRequirements
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> registration(@RequestBody @Valid AuthRequest request) throws Exception {
         boolean isEmailExist = this.userRepository.findOneByEmail(request.getEmail()).isPresent();
@@ -92,11 +96,10 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<AuthResponse> refreshToken(
-            @RequestHeader("Authorization") String authToken,
+            @Parameter(hidden = true) @RequestHeader(name = "Authorization", required = false) String authToken,
             @RequestBody @Valid RefreshTokenRequest request) throws Exception {
 
-        String jwt = authToken.replace("Bearer ", "");
-        UserDTO userDTO = this.jwtUtil.parseToken(jwt);
+        UserDTO userDTO = this.jwtUtil.parseToken(authToken);
 
         User user = this.userRepository.findById(userDTO.getId()).orElse(null);
 

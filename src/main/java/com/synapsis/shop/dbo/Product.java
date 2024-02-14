@@ -30,10 +30,13 @@ public class Product implements Serializable {
     private Integer id;
 
     @NotBlank
-    @Size(min = 5)
-    @Size(max = 225)
+    @Size(min = 5, max = 255)
     @Column(name = "name")
     private String name;
+
+    @JsonProperty("category_id")
+    @Column(name = "category_id")
+    private Integer categoryId;
 
     @NotNull
     @Column(name = "price")
