@@ -55,7 +55,7 @@ erDiagram
     Chart {
         user_id int
         product_id int
-        quantit int
+        quantity int
         created_at timestamp
         updated_at timestamp
     }

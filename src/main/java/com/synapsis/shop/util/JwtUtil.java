@@ -21,10 +21,10 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtil {
 
     @Value("${jwt.secret}")
-    private String secret;
+    String secret;
 
     @Value("${jwt.expired-in-minite}")
-    private Long expiredInMinite;
+    Long expiredInMinite;
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();

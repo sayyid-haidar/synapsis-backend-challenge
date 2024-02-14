@@ -3,7 +3,6 @@ package com.synapsis.shop.controller;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -16,12 +15,12 @@ import com.synapsis.shop.dto.AuthRequest;
 import com.synapsis.shop.dto.AuthResponse;
 import com.synapsis.shop.dto.RefreshTokenRequest;
 import com.synapsis.shop.dto.UserDTO;
-import com.synapsis.shop.exception.InvalidUserCredentialException;
+import com.synapsis.shop.exception.BadRequestException;
+import com.synapsis.shop.exception.InvalidCredentialException;
 import com.synapsis.shop.repository.UserRepository;
 import com.synapsis.shop.util.JwtUtil;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +43,7 @@ public class AuthController {
         User user = this.userRepository.findOneByEmail(request.getEmail()).orElse(null);
 
         if (user == null || !BCrypt.checkpw(request.getPassword(), user.getPassword())) {
-            throw new InvalidUserCredentialException();
+            throw new InvalidCredentialException();
         }
 
         user.setRefreshToken(RandomStringUtils.randomAlphanumeric(30));
@@ -62,7 +61,7 @@ public class AuthController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<AuthResponse> registration(@RequestBody @Valid AuthRequest request) throws Exception {
         boolean isEmailExist = this.userRepository.findOneByEmail(request.getEmail()).isPresent();
         if (isEmailExist) {
@@ -93,7 +92,7 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<AuthResponse> refreshToken(
-            @RequestHeader("Authorization") @NotBlank @Valid String authToken,
+            @RequestHeader("Authorization") String authToken,
             @RequestBody @Valid RefreshTokenRequest request) throws Exception {
 
         String jwt = authToken.replace("Bearer ", "");
