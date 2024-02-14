@@ -99,7 +99,9 @@ erDiagram
 
 ## API Doc
 
-https://sayyid-haidar.github.io/synapsis-backend-challenge-apidoc/
+Online: https://sayyid-haidar.github.io/synapsis-backend-challenge-apidoc/
+
+After running: http://localhost:8080/swagger-ui/index.html
 
 ## How to run application
 
