@@ -90,10 +90,10 @@ erDiagram
         updated_at timestamp
     }
 
-    User ||--o{ Chart : have 
+    User ||--o{ Cart : have 
     User ||--o{ Transaction : have 
     Transaction }o--|| Product : have 
-    Chart }o--|| Product : have 
+    Cart }o--|| Product : have 
     ProductCategory ||--o{ Product : have 
 ```
 
