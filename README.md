@@ -71,7 +71,7 @@ erDiagram
         updated_at timestamp
     }
 
-    Chart {
+    Cart {
         user_id int
         product_id int
         quantity int
